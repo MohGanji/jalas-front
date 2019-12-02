@@ -12,26 +12,24 @@ export default class RoomsContainer extends Component {
     reserveRoom(poll.id, room)
       .then(res => {
         console.log(res);
-        if (res.data.includes("400")) {
-          this.setState({
-            reserveErrored: true,
-            reserveErrorMessage: "This room is already reserved for this date"
-          });
-        } else if(res.data.includes("500") || res.data.includes("503")) {
-          this.setState({
-            reserveErrored: true,
-            reserveErrorMessage: "Server internal error, please try again later"
-          });
-        } else {
-          this.props.finalizeMeeting(poll.startDate, poll.endDate, room)
-        }
+        
+        this.props.finalizeMeeting(poll.startDate, poll.endDate, room)
+        
         // this.props.finalizeMeeting(poll.startDate, poll.endDate, room)
       })
       .catch(err => {
         console.log(err);
-        // this.setState({
-        //   reserveErrored: true
-        // });
+        if(err.message.includes('400')) {
+          this.setState({
+            reserveErrored: true,
+            reserveErrorMessage: "This room is already reserved for this date"
+          });
+        } else {
+          this.setState({
+            reserveErrored: true,
+            reserveErrorMessage: "Server internal error, please try again later"
+          });
+        }
       });
   }
 
