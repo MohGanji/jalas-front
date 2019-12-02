@@ -1,3 +1,7 @@
 .app-container {
     padding-top: 40px;
 }
+
+.hidden {
+    display: none !important;
+}
