@@ -4,19 +4,35 @@ import { reserveRoom } from "../utils/fetcher";
 
 export default class RoomsContainer extends Component {
   state = {
-    reserveErrored: false
+    reserveErrored: false,
+    reserveErrorMessage: ""
   };
 
   handleRoomClick(poll, room) {
-    reserveRoom(poll.id, room).then(res => {
-      console.log(res)
-      // this.props.finalizeMeeting(poll.startDate, poll.endDate, room)
-    }).catch(err => {
-      console.log(err)
-      // this.setState({
-      //   reserveErrored: true
-      // });
-    })
+    reserveRoom(poll.id, room)
+      .then(res => {
+        console.log(res);
+        if (res.data.includes("400")) {
+          this.setState({
+            reserveErrored: true,
+            reserveErrorMessage: "This room is already reserved for this date"
+          });
+        } else if(res.data.includes("500") || res.data.includes("503")) {
+          this.setState({
+            reserveErrored: true,
+            reserveErrorMessage: "Server internal error, please try again later"
+          });
+        } else {
+          this.props.finalizeMeeting(poll.startDate, poll.endDate, room)
+        }
+        // this.props.finalizeMeeting(poll.startDate, poll.endDate, room)
+      })
+      .catch(err => {
+        console.log(err);
+        // this.setState({
+        //   reserveErrored: true
+        // });
+      });
   }
 
   closeModal() {
@@ -43,7 +59,7 @@ export default class RoomsContainer extends Component {
         >
           <Modal.Header content="Error" />
           <Modal.Content>
-            <h4>This room is already reserved for this date</h4>
+            <h4>{this.state.reserveErrorMessage}</h4>
           </Modal.Content>
           <Modal.Actions>
             <Button color="red" onClick={() => this.closeModal()} inverted>

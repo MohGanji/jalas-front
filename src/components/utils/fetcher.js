@@ -35,6 +35,7 @@ export const getAvailableRooms = async (startDate, endDate) => {
 };
 
 export const reserveRoom = async (poll_id, room_number) => {
+  console.log("TCL: reserveRoom -> poll_id, room_number", poll_id, room_number)
   return axios.post(
     `${BASE_URL}/room/reserve`,
     {

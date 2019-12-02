@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Icon, Label, Segment } from "semantic-ui-react";
+import { Icon, Label, Segment, Message } from "semantic-ui-react";
 import RoomsContainer from "./RoomsContainer";
 import { getAvailableRooms } from "../utils/fetcher";
 
@@ -15,8 +15,8 @@ class PollItem extends Component {
     if (this.props.selected) {
       getAvailableRooms(this.props.startDate, this.props.endDate).then(res => {
         console.log("getAvailableRooms: ", res);
-        if (res.data && res.data.availableRooms && Array.isArray(res.data.availableRooms)) {
-          this.setState({ rooms: res.data.availableRooms });
+        if (res.data && Array.isArray(res.data)) {
+          this.setState({ rooms: res.data });
         }
       });
     }
@@ -32,7 +32,7 @@ class PollItem extends Component {
       selectPoll,
       id
     } = this.props;
-    const { rooms } = this.state;
+    const { rooms, roomsFetchErrored } = this.state;
     return (
       <Segment.Group horizontal>
         <Segment className="poll-item">

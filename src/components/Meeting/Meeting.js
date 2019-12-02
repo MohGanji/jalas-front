@@ -53,13 +53,13 @@ class Meeting extends Component {
       <Container className="meeting-container">
         {this.state.meetingCreated ? (
           <Container>
-            <Card>
+            <Card fluid>
               <Card.Content>
                 <Card.Header>{meeting.title}</Card.Header>
                 <Card.Meta>
                   from {meeting.startDate} to {meeting.endDate}
                 </Card.Meta>
-                <Card.Description>{meeting.room}</Card.Description>
+                <Card.Description>At Room {meeting.room}</Card.Description>
               </Card.Content>
             </Card>
             <Message success visible attached="bottom">
