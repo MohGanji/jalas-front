@@ -47,3 +47,15 @@ export const reserveRoom = async (poll_id, room_number) => {
     }
   );
 };
+
+export const cancelMeetingReservation = async(meeting_id) => {
+  return axios.post(
+    `${BASE_URL}/room/cancel_meeting`,
+    {
+      meeting_id
+    },
+    {
+      headers: await headers()
+    }
+  );
+}
