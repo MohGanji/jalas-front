@@ -7,18 +7,23 @@ class PollItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rooms: [],
+      rooms: null,
       fetchRoomsError: ''
     };
   }
 
   componentDidUpdate() {
-    if (this.props.selected && !this.state.fetchRoomsError.length && !this.state.rooms.length) {
+    if (this.props.selected && !this.state.fetchRoomsError.length && this.state.rooms === null) {
       getAvailableRooms(this.props.startDate, this.props.endDate).then(res => {
         console.log("getAvailableRooms: ", res);
-        if (res.data && Array.isArray(res.data)) {
-          this.setState({ rooms: res.data });
-        } else {
+        try {
+          const rooms = JSON.parse(res.data)
+          if(Array.isArray(rooms)) {
+            this.setState({ rooms: rooms });
+          } else {
+            this.setState({fetchRoomsError: res.data})
+          }
+        } catch (err) {
           this.setState({fetchRoomsError: res.data})
         }
       });
@@ -60,7 +65,7 @@ class PollItem extends Component {
             {new Date(endDate).toLocaleString()}
           </Label>
         </Segment>
-        {selected && fetchRoomsError === '' && <RoomsContainer finalizeMeeting={this.props.finalizeMeeting} poll={this.props} rooms={rooms} />}
+        {selected && fetchRoomsError === '' && <RoomsContainer finalizeMeeting={this.props.finalizeMeeting} poll={this.props} rooms={rooms || []} />}
         {fetchRoomsError.length > 0 && <Segment>{fetchRoomsError}</Segment> }
       </Segment.Group>
     );

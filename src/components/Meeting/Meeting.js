@@ -4,6 +4,8 @@ import PollItem from "./PollItem";
 import { Container, Header, Card, Message, Button } from "semantic-ui-react";
 import { getMeeting, cancelMeetingReservation } from "../utils/fetcher";
 
+const meetingStatusText = ["Initial", "Pending", "Finalized", "", "Errored"];
+
 class Meeting extends Component {
   constructor(props) {
     super(props);
@@ -14,11 +16,11 @@ class Meeting extends Component {
         startDate: null,
         endDate: null,
         room: null,
-        status: "",
+        status: 0,
         polls: []
       },
       meetingCreated: false,
-      selectedPoll: -1,
+      selectedPoll: -1
     };
     this.finalizeMeeting = this.finalizeMeeting.bind(this);
     this.checkMeetingStatus = this.checkMeetingStatus.bind(this);
@@ -35,14 +37,18 @@ class Meeting extends Component {
     this.selectPoll = this.selectPoll.bind(this);
   }
 
-  selectPoll(ind) {
-    this.setState({ selectedPoll: ind });
+  selectPoll(id) {
+    this.setState({ selectedPoll: id });
+  }
+  backToPolls() {
+    this.setState({ meetingCreated: false, selectedPoll: -1 });
   }
 
   finalizeMeeting(startDate, endDate, room) {
     const interval = setInterval(() => {
       this.checkMeetingStatus();
     }, 1000);
+    console.log("interval set: ", interval);
     this.setState(prevState => ({
       meetingCreated: true,
       meeting: {
@@ -50,14 +56,14 @@ class Meeting extends Component {
         status: 1, // pending
         startDate,
         endDate,
-        room,
-        checkMeetingStatusInterval: interval
-      }
+        room
+      },
+      checkMeetingStatusInterval: interval
     }));
   }
 
   cancelReservation() {
-    cancelMeetingReservation(this.state.meeting.id).then(res=> {
+    cancelMeetingReservation(this.state.meeting.id).then(res => {
       clearInterval(this.state.checkMeetingStatusInterval);
       this.setState(prevState => ({
         meeting: {
@@ -71,13 +77,14 @@ class Meeting extends Component {
         checkMeetingStatusInterval: null,
         selectedPoll: -1
       }));
-    })
-    
+    });
   }
 
   checkMeetingStatus() {
     getMeeting(this.state.meeting.id).then(res => {
-      if (res.data.status === 2) {
+      console.log("checkMeetingStatus: ", res.data);
+      if (res.data.status === 2 || res.data.status === 4) {
+        console.log("clearing: ", this.state.checkMeetingStatusInterval);
         clearInterval(this.state.checkMeetingStatusInterval);
         this.setState(prevState => ({
           meeting: {
@@ -95,7 +102,7 @@ class Meeting extends Component {
     const { meeting } = this.state;
     return (
       <Container className="meeting-container">
-        {this.state.meetingCreated && this.state.meeting.status !== 0 ? (
+        {this.state.meetingCreated ? (
           <Container>
             <Card fluid>
               <Card.Content>
@@ -105,16 +112,35 @@ class Meeting extends Component {
                 </Card.Meta>
                 <Card.Description>At Room {meeting.room}</Card.Description>
                 <Card.Content extra>
-                  Status: {meeting.status === 1 ? "Pending" : "Finalized"}
-                  {meeting.status === 1 && (<Button floated="right" onClick={() => this.cancelReservation()} basic color="red">
-                    Cancel
-                  </Button>)}
+                  Status: {meetingStatusText[meeting.status]}
+                  {meeting.status === 1 && (
+                    <Button
+                      floated="right"
+                      onClick={() => this.cancelReservation()}
+                      basic
+                      color="red"
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                  {meeting.status === 4 && (
+                    <Button
+                      floated="right"
+                      onClick={() => this.backToPolls()}
+                      basic
+                      color="blue"
+                    >
+                      Back
+                    </Button>
+                  )}
                 </Card.Content>
               </Card.Content>
             </Card>
-            <Message success visible attached="bottom">
-              Meeting created successfully
-            </Message>
+            {meeting.status === 4 && (
+              <Message error visible attached="bottom">
+                Room is Already Reserved
+              </Message>
+            )}
           </Container>
         ) : (
           <Container className="meeting-polls-container">
