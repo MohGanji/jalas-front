@@ -61,12 +61,13 @@ export const cancelMeetingReservation = async meeting_id => {
 };
 
 export const createPoll = async poll => {
+  console.log('createPoll: ', poll)
   return axios.post(
     `${BASE_URL}/poll`,
     {
       title: poll.title,
       options_set: poll.options,
-      guests: poll.guests
+      attendees: poll.guests,
     },
     {
       headers: await headers()
@@ -98,7 +99,7 @@ export const createVote = async (user_email, option_id, vote) => {
   return axios.post(
     `${BASE_URL}/vote`,
     {
-      user_email,
+      person_email: user_email,
       option_id,
       vote: vote,
     },

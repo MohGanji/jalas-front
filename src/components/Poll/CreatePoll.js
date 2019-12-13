@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
+import { Redirect } from 'react-router-dom'
 import {
   Container,
   Form,
@@ -11,9 +11,6 @@ import {
 import { createPoll } from "../utils/fetcher";
 
 export default class CreatePoll extends Component {
-  // static propTypes = {
-  //     prop: PropTypes
-  // }
   constructor(props) {
     super(props);
     this.state = {
@@ -22,10 +19,12 @@ export default class CreatePoll extends Component {
       options: [
         { start_date: "2019-12-13T11:32", end_date: "2019-12-13T13:32" }
       ],
-      guests: ["someone@gmail"],
+      guests: [{email: "someone@gmail"}],
       currentOptionStartDate: "",
       currentOptionEndDate: "",
-      currentGuest: ""
+      currentGuest: "",
+      submitted: false,
+      new_poll_id: '',
     };
     this.handleValueChange = this.handleValueChange.bind(this);
   }
@@ -54,7 +53,7 @@ export default class CreatePoll extends Component {
       this.setState(prevState => ({
         options: [...prevState.options, { start_date, end_date }],
         currentOptionStartDate: "",
-        currentOptionEndDate: ""
+        currentOptionEndDate: "",
       }));
     }
   }
@@ -74,7 +73,7 @@ export default class CreatePoll extends Component {
       alert("You should enter a valid Email address!");
     } else {
       this.setState(prevState => ({
-        guests: [...prevState.guests, currentGuest],
+        guests: [...prevState.guests, { email: currentGuest }],
         currentGuest: ""
       }));
     }
@@ -87,21 +86,27 @@ export default class CreatePoll extends Component {
 
   submitForm(event) {
     event.preventDefault();
-    createPoll(this.state);
+    createPoll(this.state).then((res) => {
+      this.setState({submitted: true, new_poll_id: res.data.id})
+    }).catch((err) => {
+      console.error('Error in creating poll: ', err)
+    })
   }
 
   render() {
     const {
-      pollId,
+      poll_id,
       title,
       options,
       guests,
       currentOptionEndDate,
       currentOptionStartDate,
-      currentGuest
+      currentGuest,
+      submitted,
+      new_poll_id,
     } = this.state;
     console.log(this.state);
-    return (
+    return (submitted) ? (<Redirect to={`/poll/${new_poll_id}`} />) : (
       <Container>
         <Segment>
           <Header size="large">Create Poll</Header>
@@ -186,7 +191,7 @@ export default class CreatePoll extends Component {
                 {guests.map((item, ind) => (
                   <Card key={ind} fluid>
                     <Card.Content>
-                      {item}
+                      {item.email}
                       <Button
                         floated="right"
                         onClick={() => this.removeGuest(ind)}
