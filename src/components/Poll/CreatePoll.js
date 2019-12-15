@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Redirect } from 'react-router-dom'
+import { Redirect } from "react-router-dom";
 import {
   Container,
   Form,
@@ -8,7 +8,7 @@ import {
   Card,
   Button
 } from "semantic-ui-react";
-import { createPoll } from "../utils/fetcher";
+import { createPoll, getPoll } from "../utils/fetcher";
 
 export default class CreatePoll extends Component {
   constructor(props) {
@@ -17,21 +17,33 @@ export default class CreatePoll extends Component {
       poll_id: "",
       title: "",
       options: [
-        { start_date: "2019-12-13T11:32", end_date: "2019-12-13T13:32" }
+        // { start_date: "2019-12-13T11:32", end_date: "2019-12-13T13:32" }
       ],
-      guests: [{email: "someone@gmail"}],
+      guests: [
+        // {email: "someone@gmail"}
+      ],
       currentOptionStartDate: "",
       currentOptionEndDate: "",
       currentGuest: "",
       submitted: false,
-      new_poll_id: '',
+      new_poll_id: ""
     };
     this.handleValueChange = this.handleValueChange.bind(this);
   }
   componentDidMount() {
     const poll_id = this.props.match.params.poll_id;
     if (poll_id) {
-      console.log("hereee: ", poll_id);
+      getPoll(poll_id)
+        .then(res => {
+          // console.log("data: ", res);
+          this.setState({
+            poll_id: res.data.id,
+            title: res.data.title,
+            options: res.data.options_set
+          });
+        })
+        .catch(err => console.error);
+      // console.log("hereee: ", poll_id);
       // getPoll and setState
     }
   }
@@ -53,7 +65,7 @@ export default class CreatePoll extends Component {
       this.setState(prevState => ({
         options: [...prevState.options, { start_date, end_date }],
         currentOptionStartDate: "",
-        currentOptionEndDate: "",
+        currentOptionEndDate: ""
       }));
     }
   }
@@ -86,11 +98,13 @@ export default class CreatePoll extends Component {
 
   submitForm(event) {
     event.preventDefault();
-    createPoll(this.state).then((res) => {
-      this.setState({submitted: true, new_poll_id: res.data.id})
-    }).catch((err) => {
-      console.error('Error in creating poll: ', err)
-    })
+    createPoll(this.state)
+      .then(res => {
+        this.setState({ submitted: true, new_poll_id: res.data.id });
+      })
+      .catch(err => {
+        console.error("Error in creating poll: ", err);
+      });
   }
 
   render() {
@@ -103,10 +117,12 @@ export default class CreatePoll extends Component {
       currentOptionStartDate,
       currentGuest,
       submitted,
-      new_poll_id,
+      new_poll_id
     } = this.state;
-    console.log(this.state);
-    return (submitted) ? (<Redirect to={`/poll/${new_poll_id}`} />) : (
+    // console.log(this.state);
+    return submitted ? (
+      <Redirect to={`/poll/${new_poll_id}`} />
+    ) : (
       <Container>
         <Segment>
           <Header size="large">Create Poll</Header>

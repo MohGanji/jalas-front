@@ -17,24 +17,24 @@ export default class CreatePoll extends Component {
       poll_id: "",
       title: "",
       options: [
-        {
-          id: "1234",
-          start_date: "2019-12-13T11:32",
-          end_date: "2019-12-13T14:32",
-          vote: 0
-        },
-        {
-          id: "1235",
-          start_date: "2019-12-14T11:32",
-          end_date: "2019-12-14T14:32",
-          vote: 0
-        },
-        {
-          id: "1236",
-          start_date: "2019-12-15T11:32",
-          end_date: "2019-12-15T14:32",
-          vote: 0
-        }
+        // {
+        //   id: "1234",
+        //   start_date: "2019-12-13T11:32",
+        //   end_date: "2019-12-13T14:32",
+        //   vote: 0
+        // },
+        // {
+        //   id: "1235",
+        //   start_date: "2019-12-14T11:32",
+        //   end_date: "2019-12-14T14:32",
+        //   vote: 0
+        // },
+        // {
+        //   id: "1236",
+        //   start_date: "2019-12-15T11:32",
+        //   end_date: "2019-12-15T14:32",
+        //   vote: 0
+        // }
       ],
       user_email: ""
     };
@@ -43,7 +43,7 @@ export default class CreatePoll extends Component {
   componentDidMount() {
     const poll_id = this.props.match.params.poll_id;
     if (poll_id) {
-      console.log("hereee: ", poll_id);
+      // console.log("hereee: ", poll_id);
       getPoll(poll_id)
         .then(res => {
           console.log("data: ", res);
