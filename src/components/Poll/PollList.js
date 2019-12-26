@@ -47,7 +47,7 @@ export default class PollList extends Component {
     const { polls } = this.state
     return (
       <Container className="polls-list-container">
-        <Header as="h3">{'My Polls'}</Header>
+        <Header as="h3">My Polls</Header>
         {polls.map((poll, ind) => (
           <PollListItem
             key={poll.id}

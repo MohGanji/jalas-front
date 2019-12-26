@@ -8,6 +8,7 @@ import CreateOrEditPoll from './components/Poll/CreateOrEditPoll'
 import ViewPoll from './components/Poll/ViewPoll'
 import CommentsList from './components/Comments/CommentsList'
 import PollList from './components/Poll/PollList'
+import MyMeetingList from './components/Meeting/MyMeetingList'
 
 class App extends Component {
   render() {
@@ -15,6 +16,9 @@ class App extends Component {
       <Router>
         <div className="app-container">
           <Switch>
+            {/* meetings */}
+            <Route path="/meetings" component={MyMeetingList} />
+
             {/* meeting */}
             <Route path="/meeting/:id" component={Meeting} />
             {/* polls */}

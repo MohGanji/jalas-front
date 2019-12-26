@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { getPollComments } from '../utils/fetcher'
+import { getPollComments, createComment } from '../utils/fetcher'
 import { Container, Header, Comment, Form, Button } from 'semantic-ui-react'
 
 export default class CommentsList extends Component {
@@ -15,12 +15,14 @@ export default class CommentsList extends Component {
   componentDidMount() {
     getPollComments(this.state.poll_id)
       .then((res) => {
+        // TODO:
         this.setState({
           comments: res.data,
         })
       })
       .catch((err) => {
         console.error(err)
+        // TODO:
         this.setState({
           comments: [
             {
@@ -52,7 +54,11 @@ export default class CommentsList extends Component {
 
   addComment(e) {
     const { poll_id, newComment } = this.state
-    // createComment(poll_id, newComment) // TODO:
+    createComment(poll_id, newComment)
+      .then((res) => {
+        // TODO:
+      })
+      .catch(console.error)
   }
 
   render() {

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Icon, Card } from 'semantic-ui-react'
 import { Redirect } from 'react-router-dom'
 
-export default class PollListItem extends Component {
+export default class MeetingListItem extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -17,13 +17,13 @@ export default class PollListItem extends Component {
   }
 
   render() {
-    const { startDate, endDate, likes, title, id } = this.props
+    const { startDate, endDate, room, title, id } = this.props
     const { redirectTo } = this.state
     return redirectTo ? (
       <Redirect to={redirectTo} />
     ) : (
       // TODO: edit or view poll
-      <Card key={id} fluid onClick={() => this.redirectTo(`/poll/${this.props.id}/view`)}>
+      <Card key={id} fluid onClick={() => this.redirectTo(`/meeting/${this.props.id}/view`)}>
         <Card.Content>
           <Card.Header>{title}</Card.Header>
           <Card.Meta>
@@ -36,8 +36,8 @@ export default class PollListItem extends Component {
           </Card.Meta>
         </Card.Content>
         <Card.Content extra>
-          <Icon name="thumbs up" />
-          {likes} Votes
+          <Icon name="map marker alternate" />
+          Room {room}
         </Card.Content>
       </Card>
     )

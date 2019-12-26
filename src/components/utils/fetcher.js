@@ -15,6 +15,8 @@ export const getMeetingList = async () => {
   })
 }
 
+export const getMyMeetingsList = getMeetingList
+
 export const getMeeting = async (meetingId) => {
   console.log('meetingId: ', meetingId)
   return axios.get(`${BASE_URL}/poll/${meetingId}`, {
@@ -61,6 +63,7 @@ export const cancelMeetingReservation = async (meeting_id) => {
 }
 
 export const createOrUpdatePoll = async (poll) => {
+  // TODO:
   console.log('createOrUpdatePoll: ', poll)
   if (poll.poll_id) {
     return axios.put(
@@ -105,6 +108,7 @@ export const updatePoll = async (poll) => {
 }
 
 export const getPollsList = async () => {
+  // TODO:
   return axios.get(`${BASE_URL}/polls/`, {
     headers: await headers(),
   })
