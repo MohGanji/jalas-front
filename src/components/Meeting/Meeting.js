@@ -30,7 +30,7 @@ class Meeting extends Component {
       getMeeting(this.props.match.params.id).then(res => {
         console.log("getMeeting: ", res);
         this.setState(prevState => ({
-          meeting: { ...prevState.meeting, ...res.data }
+          meeting: { ...prevState.meeting, ...res.data, polls: res.data.options_set }
         }));
       });
     }

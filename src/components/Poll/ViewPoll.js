@@ -1,21 +1,14 @@
-import React, { Component } from "react";
-import {
-  Container,
-  Header,
-  Segment,
-  Card,
-  Button,
-  Icon
-} from "semantic-ui-react";
-import { createVote, getPoll } from "../utils/fetcher";
-import { red } from "ansi-colors";
+import React, { Component } from 'react'
+import { Container, Header, Segment, Card, Button, Icon } from 'semantic-ui-react'
+import { createVote, getPoll } from '../utils/fetcher'
+import CommentsList from '../Comments/CommentsList'
 
-export default class CreatePoll extends Component {
+export default class ViewPoll extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      poll_id: "",
-      title: "",
+      poll_id: '',
+      title: '',
       options: [
         // {
         //   id: "1234",
@@ -36,57 +29,55 @@ export default class CreatePoll extends Component {
         //   vote: 0
         // }
       ],
-      user_email: ""
-    };
+      user_email: '',
+    }
   }
 
   componentDidMount() {
-    const poll_id = this.props.match.params.poll_id;
+    const poll_id = this.props.match.params.poll_id
     if (poll_id) {
       // console.log("hereee: ", poll_id);
       getPoll(poll_id)
-        .then(res => {
-          console.log("data: ", res);
+        .then((res) => {
+          console.log('data: ', res)
           this.setState({
             poll_id: res.data.id,
             title: res.data.title,
-            options: res.data.options_set.map(option => {
-              const userVotes = option.votes_set.filter(
-                vote => vote.person.email === this.state.user_email
-              );
+            options: res.data.options_set.map((option) => {
+              const userVotes = option.votes_set.filter((vote) => vote.person.email === this.state.user_email)
               return {
                 ...option,
-                vote: userVotes.length ? userVotes[0].vote : 0
-              };
-            })
-          });
+                vote: userVotes.length ? userVotes[0].vote : 0,
+              }
+            }),
+          })
         })
-        .catch(err => console.error);
+        .catch((err) => console.error)
     }
   }
 
   voteOption(optionId, vote) {
-    let user_email;
+    let user_email
     if (!this.state.user_email) {
-      user_email = prompt("Please enter your email");
-      this.setState({ user_email });
+      user_email = prompt('Please enter your email')
+      this.setState({ user_email })
     }
     createVote(this.state.user_email || user_email, optionId, vote)
-      .then(data => {
-        this.setState(prev => ({
-          options: prev.options.map(op => {
-            return op.id === optionId ? { ...op, vote: vote } : op;
-          })
-        }));
+      .then((data) => {
+        this.setState((prev) => ({
+          options: prev.options.map((op) => {
+            return op.id === optionId ? { ...op, vote: vote } : op
+          }),
+        }))
       })
-      .catch(error => {
-        alert("Server Error: ", error);
-      });
+      .catch((error) => {
+        alert('Server Error: ', error)
+      })
   }
 
   render() {
-    const { title, options } = this.state;
-    console.log(this.state);
+    const { poll_id, title, options } = this.state
+    console.log(this.state)
     return (
       <Container>
         <Header size="large">Poll Info</Header>
@@ -124,7 +115,10 @@ export default class CreatePoll extends Component {
             ))}
           </Segment>
         </Segment>
+        <Segment>
+          <CommentsList poll_id={poll_id} />
+        </Segment>
       </Container>
-    );
+    )
   }
 }

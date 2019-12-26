@@ -8,13 +8,13 @@ import {
   Card,
   Button
 } from "semantic-ui-react";
-import { createPoll, getPoll } from "../utils/fetcher";
+import { createOrUpdatePoll, getPoll } from "../utils/fetcher";
 
-export default class CreatePoll extends Component {
+export default class CreateOrEditPoll extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      poll_id: "",
+      poll_id: props.match.params.poll_id || "",
       title: "",
       options: [
         // { start_date: "2019-12-13T11:32", end_date: "2019-12-13T13:32" }
@@ -39,10 +39,19 @@ export default class CreatePoll extends Component {
           this.setState({
             poll_id: res.data.id,
             title: res.data.title,
-            options: res.data.options_set
+            options: res.data.options_set,
+            guests: res.data.guests_set, // TODO:
           });
         })
-        .catch(err => console.error);
+        .catch(err => {
+          console.error(err)
+          this.setState({            
+            poll_id: poll_id,
+            title: "some old title",
+            options: [{ start_date: "2019-12-13T11:32", end_date: "2019-12-13T13:32" }],
+            guests: [{email: "someone@gmail"}],            
+          });
+        });
       // console.log("hereee: ", poll_id);
       // getPoll and setState
     }
@@ -98,7 +107,7 @@ export default class CreatePoll extends Component {
 
   submitForm(event) {
     event.preventDefault();
-    createPoll(this.state)
+    createOrUpdatePoll(this.state)
       .then(res => {
         this.setState({ submitted: true, new_poll_id: res.data.id });
       })
@@ -125,7 +134,7 @@ export default class CreatePoll extends Component {
     ) : (
       <Container>
         <Segment>
-          <Header size="large">Create Poll</Header>
+          <Header size="large"> {poll_id ? "Edit Poll" : "Create Poll"}</Header>
           <Form>
             <Form.Field inline className="poll-title">
               <label> Title </label>
@@ -226,7 +235,7 @@ export default class CreatePoll extends Component {
               type="submit"
               onClick={e => this.submitForm(e)}
             >
-              Submit Poll
+              {poll_id ? "Update Poll" : "Create Poll"}
             </Form.Button>
           </Form>
         </Segment>

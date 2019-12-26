@@ -1,11 +1,13 @@
-import React, { Component } from "react";
-import "./App.css";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React, { Component } from 'react'
+import './App.css'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
-import Meeting from "./components/Meeting/Meeting";
-import MeetingList from "./components/MeetingList/MeetingList";
-import CreatePoll from "./components/Poll/CreatePoll";
-import Poll from "./components/Poll/Poll";
+import Meeting from './components/Meeting/Meeting'
+import MeetingList from './components/MeetingList/MeetingList'
+import CreateOrEditPoll from './components/Poll/CreateOrEditPoll'
+import ViewPoll from './components/Poll/ViewPoll'
+import CommentsList from './components/Comments/CommentsList'
+import PollList from './components/Poll/PollList'
 
 class App extends Component {
   render() {
@@ -13,18 +15,24 @@ class App extends Component {
       <Router>
         <div className="app-container">
           <Switch>
+            {/* meeting */}
             <Route path="/meeting/:id" component={Meeting} />
-            <Route path="/createPoll" component={CreatePoll} />
-            <Route path="/editPoll/:poll_id" component={CreatePoll} />
-            <Route path="/poll/:poll_id" component={Poll} />
+            {/* polls */}
+            <Route path="/polls/" component={PollList} />
+            {/* poll */}
+            <Route path="/poll/:poll_id/view" component={ViewPoll} />
+            <Route path="/poll/:poll_id/comments" component={CommentsList} />
+            <Route path="/poll/:poll_id" component={CreateOrEditPoll} />
+            <Route path="/poll/" component={CreateOrEditPoll} />
+            {/* root */}
             <Route path="/">
               <MeetingList />
             </Route>
           </Switch>
         </div>
       </Router>
-    );
+    )
   }
 }
 
-export default App;
+export default App
