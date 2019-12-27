@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const BASE_URL = 'http://127.0.0.1:8000'
+// const BASE_URL = 'http://127.0.0.1:8000'
+const BASE_URL = 'http://192.168.1.122:1080'
 
 const headers = async () => {
   return {
@@ -67,9 +68,8 @@ export const createOrUpdatePoll = async (poll) => {
   console.log('createOrUpdatePoll: ', poll)
   if (poll.poll_id) {
     return axios.put(
-      `${BASE_URL}/poll`,
+      `${BASE_URL}/poll/${poll.poll_id}`,
       {
-        id: poll.poll_id,
         title: poll.title,
         options_set: poll.options,
         attendees: poll.guests,
@@ -93,23 +93,9 @@ export const createOrUpdatePoll = async (poll) => {
   }
 }
 
-export const updatePoll = async (poll) => {
-  return axios.post(
-    `${BASE_URL}/poll/${poll.poll_id}`,
-    {
-      title: poll.title,
-      options_set: poll.options,
-      guests: poll.guests,
-    },
-    {
-      headers: await headers(),
-    },
-  )
-}
-
 export const getPollsList = async () => {
   // TODO:
-  return axios.get(`${BASE_URL}/polls/`, {
+  return axios.get(`${BASE_URL}/poll/my`, {
     headers: await headers(),
   })
 }
