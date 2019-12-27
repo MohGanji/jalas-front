@@ -7,6 +7,7 @@ const headers = async () => {
   return {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
+    email: '',
   }
 }
 
@@ -120,25 +121,18 @@ export const createVote = async (user_email, option_id, vote) => {
 }
 
 export const getPollComments = async (poll_id) => {
-  // TODO:
-  return axios.get(
-    `${BASE_URL}/comments`,
-    {
-      poll_id: poll_id,
-    },
-    {
-      headers: await headers(),
-    },
-  )
+  return axios.get(`${BASE_URL}/poll/${poll_id}/comments`, {
+    headers: await headers(),
+  })
 }
 
 export const createComment = async (poll_id, newComment) => {
-  // TODO:
   return axios.post(
-    `${BASE_URL}/comments`,
+    `${BASE_URL}/comment/`,
     {
-      poll_id: poll_id,
-      newComment,
+      poll: poll_id,
+      text: newComment,
+      writer: 1, // TODO: get from context!
     },
     {
       headers: await headers(),

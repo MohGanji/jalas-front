@@ -17,7 +17,7 @@ export default class PollList extends Component {
       .then((res) => {
         console.log('TCL: PollList -> componentWillMount -> getPollsList -> res', res)
         this.setState({
-          polls: res.data.polls,
+          polls: res.data,
         })
       })
       .catch((err) => {

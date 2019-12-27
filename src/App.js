@@ -25,6 +25,7 @@ class App extends Component {
             <Route path="/polls/" component={PollList} />
             {/* poll */}
             <Route path="/poll/:poll_id/view" component={ViewPoll} />
+            <Route path="/poll/:poll_id/edit" component={CreateOrEditPoll} />
             <Route path="/poll/:poll_id/comments" component={CommentsList} />
             <Route path="/poll/:poll_id" component={CreateOrEditPoll} />
             <Route path="/poll/" component={CreateOrEditPoll} />

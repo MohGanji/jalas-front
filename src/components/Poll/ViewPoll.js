@@ -7,7 +7,7 @@ export default class ViewPoll extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      poll_id: '',
+      poll_id: props.match.params.poll_id,
       title: '',
       options: [
         // {
@@ -33,27 +33,23 @@ export default class ViewPoll extends Component {
     }
   }
 
-  componentDidMount() {
-    const poll_id = this.props.match.params.poll_id
-    if (poll_id) {
-      // console.log("hereee: ", poll_id);
-      getPoll(poll_id)
-        .then((res) => {
-          console.log('data: ', res)
-          this.setState({
-            poll_id: res.data.id,
-            title: res.data.title,
-            options: res.data.options_set.map((option) => {
-              const userVotes = option.votes_set.filter((vote) => vote.person.email === this.state.user_email)
-              return {
-                ...option,
-                vote: userVotes.length ? userVotes[0].vote : 0,
-              }
-            }),
-          })
+  componentWillMount() {
+    console.log('state here: ', this.state.poll_id)
+    getPoll(this.state.poll_id)
+      .then((res) => {
+        console.log('data: ', res)
+        this.setState({
+          title: res.data.title,
+          options: res.data.options_set.map((option) => {
+            const userVotes = option.votes_set.filter((vote) => vote.person.email === this.state.user_email)
+            return {
+              ...option,
+              vote: userVotes.length ? 1 : 0,
+            }
+          }),
         })
-        .catch((err) => console.error)
-    }
+      })
+      .catch((err) => console.error)
   }
 
   voteOption(optionId, vote) {
@@ -76,8 +72,8 @@ export default class ViewPoll extends Component {
   }
 
   render() {
-    const { poll_id, title, options } = this.state
-    console.log(this.state)
+    let { poll_id, title, options } = this.state
+    console.log('ssss: ', this.state)
     return (
       <Container>
         <Header size="large">Poll Info</Header>
@@ -99,16 +95,6 @@ export default class ViewPoll extends Component {
                   >
                     <Icon name="thumbs up" />
                     Upvote
-                  </Button>
-                  <Button
-                    floated="right"
-                    onClick={() => this.voteOption(option.id, -1)}
-                    basic
-                    disabled={option.vote === -1}
-                    color="orange"
-                  >
-                    <Icon name="thumbs down" />
-                    Downvote
                   </Button>
                 </Card.Content>
               </Card>

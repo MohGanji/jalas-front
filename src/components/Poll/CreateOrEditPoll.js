@@ -119,8 +119,8 @@ export default class CreateOrEditPoll extends Component {
       new_poll_id,
     } = this.state
     // console.log(this.state);
-    return submitted ? (
-      <Redirect to={`/poll/${new_poll_id}`} />
+    return submitted && new_poll_id ? (
+      <Redirect to={`/poll/${new_poll_id}/edit`} />
     ) : (
       <Container>
         <Segment>

@@ -26,19 +26,19 @@ export default class PollListItem extends Component {
       <Card key={id} fluid onClick={() => this.redirectTo(`/poll/${this.props.id}/view`)}>
         <Card.Content>
           <Card.Header>{title}</Card.Header>
-          <Card.Meta>
+          {/* <Card.Meta>
             <b> from </b>
             {new Date(startDate).toLocaleString()}
           </Card.Meta>
           <Card.Meta>
             <b> to </b>
             {new Date(endDate).toLocaleString()}
-          </Card.Meta>
+          </Card.Meta> */}
         </Card.Content>
-        <Card.Content extra>
+        {/* <Card.Content extra>
           <Icon name="thumbs up" />
           {likes} Votes
-        </Card.Content>
+        </Card.Content> */}
       </Card>
     )
   }

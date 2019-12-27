@@ -5,9 +5,8 @@ import { Container, Header, Comment, Form, Button } from 'semantic-ui-react'
 export default class CommentsList extends Component {
   constructor(props) {
     super(props)
-    console.log(props)
     this.state = {
-      poll_id: props.poll_id || props.match ? props.match.params.poll_id : '',
+      poll_id: props.poll_id || (props.match ? props.match.params.poll_id : ''),
       comments: [],
       newComment: '',
     }
@@ -15,36 +14,13 @@ export default class CommentsList extends Component {
   componentDidMount() {
     getPollComments(this.state.poll_id)
       .then((res) => {
-        // TODO:
         this.setState({
           comments: res.data,
         })
       })
       .catch((err) => {
         console.error(err)
-        // TODO:
-        this.setState({
-          comments: [
-            {
-              id: '1',
-              text: 'This was the shitttiest text ',
-              user: 'some user',
-              createdAt: new Date(),
-            },
-            {
-              id: '2',
-              text: 'This was the shitttiest text ',
-              user: 'some user',
-              createdAt: new Date(),
-            },
-            {
-              id: '3',
-              text: 'This was the shitttiest text ',
-              user: 'some user',
-              createdAt: new Date(),
-            },
-          ],
-        })
+        alert(err)
       })
   }
 
@@ -53,10 +29,15 @@ export default class CommentsList extends Component {
   }
 
   addComment(e) {
+    e.preventDefault()
     const { poll_id, newComment } = this.state
     createComment(poll_id, newComment)
       .then((res) => {
-        // TODO:
+        console.log(res)
+        this.setState((prevState) => ({
+          comments: [...prevState.comments, res.data],
+          newComment: '',
+        }))
       })
       .catch(console.error)
   }
@@ -73,18 +54,19 @@ export default class CommentsList extends Component {
           {comments.map((comment, ind) => (
             <Comment key={comment.id}>
               <Comment.Content>
-                <Comment.Author>{comment.user}</Comment.Author>
-                <Comment.Metadata>
-                  <div>{comment.createdAt.toString()}</div>
-                </Comment.Metadata>
+                <Comment.Author>{comment.writer}</Comment.Author>
                 <Comment.Text>{comment.text}</Comment.Text>
               </Comment.Content>
             </Comment>
           ))}
 
-          <Form reply>
-            <Form.TextArea value={newComment} onChange={(e) => this.handleValueChange(e, 'newComment')} />
-            <Button content="Add Comment" onClick={this.addComment()} labelPosition="left" icon="edit" primary />
+          <Form onSubmit={(e) => this.addComment(e)} reply>
+            <Form.TextArea
+              value={newComment}
+              placeholder="Add new comment here ..."
+              onChange={(e) => this.handleValueChange(e, 'newComment')}
+            />
+            <Button content="Add Comment" labelPosition="left" icon="edit" primary />
           </Form>
         </Comment.Group>
       </Container>
