@@ -3,28 +3,34 @@ import axios from 'axios'
 // const BASE_URL = 'http://127.0.0.1:8000'
 const BASE_URL = 'http://192.168.1.122:1080'
 
-const headers = async () => {
+const config = async () => {
   return {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      Authorization: localStorage.getItem('session'),
+    },
+    withCredentials: true,
   }
 }
 
 export const login = async (email) => {
-  return axios.post(
+  const res = await axios.post(
     `${BASE_URL}/login`,
     {
       email,
     },
     {
-      headers: await headers(),
+      ...(await config()),
     },
   )
+  localStorage.setItem('session', res.data.email)
+  return res
 }
 
 export const getMeetingList = async () => {
   return axios.get(`${BASE_URL}/poll`, {
-    headers: await headers(),
+    ...(await config()),
   })
 }
 
@@ -33,7 +39,7 @@ export const getMyMeetingsList = getMeetingList
 export const getMeeting = async (meetingId) => {
   console.log('meetingId: ', meetingId)
   return axios.get(`${BASE_URL}/poll/${meetingId}`, {
-    headers: await headers(),
+    ...(await config()),
   })
 }
 
@@ -44,7 +50,7 @@ export const getAvailableRooms = async (startDate, endDate) => {
       endDate.length - 1,
     )}`,
     {
-      headers: await headers(),
+      ...(await config()),
     },
   )
 }
@@ -58,7 +64,7 @@ export const reserveRoom = async (poll_id, room_number) => {
       room_number,
     },
     {
-      headers: await headers(),
+      ...(await config()),
     },
   )
 }
@@ -70,7 +76,7 @@ export const cancelMeetingReservation = async (meeting_id) => {
       meeting_id,
     },
     {
-      headers: await headers(),
+      ...(await config()),
     },
   )
 }
@@ -87,7 +93,7 @@ export const createOrUpdatePoll = async (poll) => {
         attendees: poll.guests,
       },
       {
-        headers: await headers(),
+        ...(await config()),
       },
     )
   } else {
@@ -99,7 +105,7 @@ export const createOrUpdatePoll = async (poll) => {
         attendees: poll.guests,
       },
       {
-        headers: await headers(),
+        ...(await config()),
       },
     )
   }
@@ -108,13 +114,13 @@ export const createOrUpdatePoll = async (poll) => {
 export const getPollsList = async () => {
   // TODO:
   return axios.get(`${BASE_URL}/poll/my`, {
-    headers: await headers(),
+    ...(await config()),
   })
 }
 
 export const getPoll = async (poll_id) => {
   return axios.get(`${BASE_URL}/poll/${poll_id}`, {
-    headers: await headers(),
+    ...(await config()),
   })
 }
 
@@ -126,14 +132,14 @@ export const createVote = async (user_email, option_id, vote) => {
       option_id,
     },
     {
-      headers: await headers(),
+      ...(await config()),
     },
   )
 }
 
 export const getPollComments = async (poll_id) => {
   return axios.get(`${BASE_URL}/poll/${poll_id}/comments`, {
-    headers: await headers(),
+    ...(await config()),
   })
 }
 
@@ -146,7 +152,7 @@ export const createComment = async (poll_id, newComment) => {
       writer: 1, // TODO: get from context!
     },
     {
-      headers: await headers(),
+      ...(await config()),
     },
   )
 }

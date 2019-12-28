@@ -22,24 +22,7 @@ export default class PollList extends Component {
       })
       .catch((err) => {
         console.error('TCL: PollList -> componentWillMount -> err', err)
-        this.setState({
-          polls: [
-            {
-              id: '1',
-              title: 'Planning session',
-              startDate: Date.now(),
-              endDate: Date.now(),
-              likes: 4,
-            },
-            {
-              id: '2',
-              title: 'Planning session',
-              startDate: Date.now(),
-              endDate: Date.now(),
-              likes: 1,
-            },
-          ],
-        })
+        // alert('Error in fetching polls:', err)
       })
   }
 
