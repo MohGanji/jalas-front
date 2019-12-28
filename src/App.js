@@ -9,6 +9,7 @@ import ViewPoll from './components/Poll/ViewPoll'
 import CommentsList from './components/Comments/CommentsList'
 import PollList from './components/Poll/PollList'
 import MyMeetingList from './components/Meeting/MyMeetingList'
+import Login from './components/Login/Login'
 
 class App extends Component {
   render() {
@@ -16,6 +17,9 @@ class App extends Component {
       <Router>
         <div className="app-container">
           <Switch>
+            {/* auth */}
+            <Route path="/login" component={Login} />
+
             {/* meetings */}
             <Route path="/meetings" component={MyMeetingList} />
 

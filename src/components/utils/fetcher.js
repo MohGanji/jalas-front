@@ -7,8 +7,19 @@ const headers = async () => {
   return {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
-    email: '',
   }
+}
+
+export const login = async (email) => {
+  return axios.post(
+    `${BASE_URL}/login`,
+    {
+      email,
+    },
+    {
+      headers: await headers(),
+    },
+  )
 }
 
 export const getMeetingList = async () => {
