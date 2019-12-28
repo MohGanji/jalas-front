@@ -14,6 +14,7 @@ export default class CommentsList extends Component {
   componentDidMount() {
     getPollComments(this.state.poll_id)
       .then((res) => {
+        console.log('TCL: CommentsList -> componentDidMount -> res', res)
         this.setState({
           comments: res.data,
         })
@@ -35,7 +36,7 @@ export default class CommentsList extends Component {
       .then((res) => {
         console.log(res)
         this.setState((prevState) => ({
-          comments: [...prevState.comments, res.data],
+          comments: [...prevState.comments, { ...res.data, writer: { email: localStorage.getItem('session') } }],
           newComment: '',
         }))
       })
@@ -54,7 +55,7 @@ export default class CommentsList extends Component {
           {comments.map((comment, ind) => (
             <Comment key={comment.id}>
               <Comment.Content>
-                <Comment.Author>{comment.writer}</Comment.Author>
+                <Comment.Author>{comment.writer.email}</Comment.Author>
                 <Comment.Text>{comment.text}</Comment.Text>
               </Comment.Content>
             </Comment>

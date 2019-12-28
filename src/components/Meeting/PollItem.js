@@ -33,7 +33,7 @@ class PollItem extends Component {
   }
 
   render() {
-    const { startDate, endDate, likes, dislikes, selected, selectPoll, id } = this.props
+    const { meetingId, startDate, endDate, likes, dislikes, selected, selectPoll, id } = this.props
     const { rooms, fetchRoomsError } = this.state
     return (
       <Segment.Group horizontal>
@@ -52,7 +52,12 @@ class PollItem extends Component {
           </Label>
         </Segment>
         {selected && fetchRoomsError === '' && (
-          <RoomsContainer finalizeMeeting={this.props.finalizeMeeting} poll={this.props} rooms={rooms || []} />
+          <RoomsContainer
+            meetingId={meetingId}
+            finalizeMeeting={this.props.finalizeMeeting}
+            poll={this.props}
+            rooms={rooms || []}
+          />
         )}
         {fetchRoomsError.length > 0 && <Segment>{fetchRoomsError}</Segment>}
       </Segment.Group>

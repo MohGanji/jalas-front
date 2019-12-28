@@ -1,24 +1,24 @@
-import React, { Component } from "react";
-import { Segment, Card, Modal, Button } from "semantic-ui-react";
-import { reserveRoom } from "../utils/fetcher";
+import React, { Component } from 'react'
+import { Segment, Card, Modal, Button } from 'semantic-ui-react'
+import { reserveRoom } from '../utils/fetcher'
 
 export default class RoomsContainer extends Component {
   state = {
     reserveErrored: false,
-    reserveErrorMessage: ""
-  };
+    reserveErrorMessage: '',
+  }
 
-  handleRoomClick(poll, room) {
-    reserveRoom(poll.id, room)
-      .then(res => {
-        console.log(res);
-        
-        this.props.finalizeMeeting(poll.startDate, poll.endDate, room)
-        
-        // this.props.finalizeMeeting(poll.startDate, poll.endDate, room)
+  handleRoomClick(meetingId, option, room) {
+    reserveRoom(meetingId, option.id, room)
+      .then((res) => {
+        console.log(res)
+
+        this.props.finalizeMeeting(option.startDate, option.endDate, room)
+
+        // this.props.finalizeMeeting(option.startDate, option.endDate, room)
       })
-      .catch(err => {
-        this.props.finalizeMeeting(poll.startDate, poll.endDate, room)
+      .catch((err) => {
+        this.props.finalizeMeeting(option.startDate, option.endDate, room)
 
         // console.log(err);
         // if(err.message.includes('400')) {
@@ -32,31 +32,27 @@ export default class RoomsContainer extends Component {
         //     reserveErrorMessage: "Server internal error, please try again later"
         //   });
         // }
-      });
+      })
   }
 
   closeModal() {
-    this.setState({ reserveErrored: false });
+    this.setState({ reserveErrored: false })
   }
 
   render() {
-    const { rooms, poll } = this.props;
+    const { meetingId, rooms, poll: option } = this.props
+    console.log('TCL: RoomsContainer -> render -> option', option)
     return (
       <Segment className="rooms-container">
-        {rooms.map(room => (
+        {rooms.map((room) => (
           <Card
             key={room}
-            onClick={() => this.handleRoomClick(poll, room)}
+            onClick={() => this.handleRoomClick(meetingId, option, room)}
             fluid
             header={`Room ${room}`}
           />
         ))}
-        <Modal
-          open={this.state.reserveErrored}
-          onClose={() => this.closeModal()}
-          basic
-          size="small"
-        >
+        <Modal open={this.state.reserveErrored} onClose={() => this.closeModal()} basic size="small">
           <Modal.Header content="Error" />
           <Modal.Content>
             <h4>{this.state.reserveErrorMessage}</h4>
@@ -68,6 +64,6 @@ export default class RoomsContainer extends Component {
           </Modal.Actions>
         </Modal>
       </Segment>
-    );
+    )
   }
 }

@@ -8,7 +8,7 @@ const config = async () => {
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
-      Authorization: localStorage.getItem('session'),
+      authorization: localStorage.getItem('session'),
     },
     withCredentials: true,
   }
@@ -55,12 +55,13 @@ export const getAvailableRooms = async (startDate, endDate) => {
   )
 }
 
-export const reserveRoom = async (poll_id, room_number) => {
+export const reserveRoom = async (poll_id, option_id, room_number) => {
   console.log('TCL: reserveRoom -> poll_id, room_number', poll_id, room_number)
   return axios.post(
     `${BASE_URL}/poll/${poll_id}/finalize`,
     {
       poll_id,
+      option_id,
       room_number,
     },
     {
@@ -124,11 +125,10 @@ export const getPoll = async (poll_id) => {
   })
 }
 
-export const createVote = async (user_email, option_id, vote) => {
+export const createVote = async (option_id, vote) => {
   return axios.post(
     `${BASE_URL}/vote`,
     {
-      person_email: user_email,
       option_id,
     },
     {
@@ -149,7 +149,6 @@ export const createComment = async (poll_id, newComment) => {
     {
       poll: poll_id,
       text: newComment,
-      writer: 1, // TODO: get from context!
     },
     {
       ...(await config()),

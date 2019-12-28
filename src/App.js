@@ -8,6 +8,7 @@ import CreateOrEditPoll from './components/Poll/CreateOrEditPoll'
 import ViewPoll from './components/Poll/ViewPoll'
 import CommentsList from './components/Comments/CommentsList'
 import PollList from './components/Poll/PollList'
+import ManagePolls from './components/Poll/ManagePolls'
 import MyMeetingList from './components/Meeting/MyMeetingList'
 import Login from './components/Login/Login'
 
@@ -23,9 +24,9 @@ class App extends Component {
             {/* meetings */}
             <Route path="/meetings" component={MyMeetingList} />
 
-            {/* meeting */}
-            <Route path="/meeting/:id" component={Meeting} />
             {/* polls */}
+            <Route path="/polls/manage/:id" component={Meeting} />
+            <Route path="/polls/manage" component={ManagePolls} />
             <Route path="/polls/" component={PollList} />
             {/* poll */}
             <Route path="/poll/:poll_id/view" component={ViewPoll} />

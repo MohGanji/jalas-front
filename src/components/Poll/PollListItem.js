@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Icon, Card } from 'semantic-ui-react'
+import { Card } from 'semantic-ui-react'
 import { Redirect } from 'react-router-dom'
 
 export default class PollListItem extends Component {
@@ -23,7 +23,7 @@ export default class PollListItem extends Component {
       <Redirect to={redirectTo} />
     ) : (
       // TODO: edit or view poll
-      <Card key={id} fluid onClick={() => this.redirectTo(`/poll/${this.props.id}/view`)}>
+      <Card key={id} fluid onClick={() => this.redirectTo(`/poll/${this.props.id}`)}>
         <Card.Content>
           <Card.Header>{title}</Card.Header>
           {/* <Card.Meta>

@@ -5,7 +5,7 @@ import Header from '../Header/Header'
 import Footer from '../Footer/Footer'
 import MeetingPreview from '../Meeting/MeetingPreview'
 
-export default class MeetingList extends Component {
+export default class ManagePolls extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -27,7 +27,7 @@ export default class MeetingList extends Component {
       <div>
         <Header />
         {meetings.map((meeting, ind) => (
-          <Link key={ind} to={`/polls/manage/1`}>
+          <Link key={ind} to={`/polls/manage/${meeting.id}`}>
             <MeetingPreview title={meeting.title} />
           </Link>
         ))}

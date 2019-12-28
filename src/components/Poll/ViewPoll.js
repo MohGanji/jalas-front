@@ -29,15 +29,12 @@ export default class ViewPoll extends Component {
         //   vote: 0
         // }
       ],
-      user_email: '',
     }
   }
 
   componentWillMount() {
-    console.log('state here: ', this.state.poll_id)
     getPoll(this.state.poll_id)
       .then((res) => {
-        console.log('data: ', res)
         this.setState({
           title: res.data.title,
           options: res.data.options_set.map((option) => {
@@ -53,12 +50,7 @@ export default class ViewPoll extends Component {
   }
 
   voteOption(optionId, vote) {
-    let user_email
-    if (!this.state.user_email) {
-      user_email = prompt('Please enter your email')
-      this.setState({ user_email })
-    }
-    createVote(this.state.user_email || user_email, optionId, vote)
+    createVote(optionId, vote)
       .then((data) => {
         this.setState((prev) => ({
           options: prev.options.map((op) => {

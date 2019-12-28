@@ -32,7 +32,7 @@ export default class PollList extends Component {
       <Container className="polls-list-container">
         <Header as="h3">My Polls</Header>
         {polls.map((poll, ind) => (
-          <PollListItem
+          <PollListItem // TO option
             key={poll.id}
             id={poll.id}
             title={poll.title}
