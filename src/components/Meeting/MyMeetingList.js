@@ -22,20 +22,20 @@ export default class MyMeetingList extends Component {
       .catch((err) => {
         this.setState({
           meetings: [
-            {
-              id: '1',
-              title: 'Planning session',
-              startDate: Date.now(),
-              endDate: Date.now(),
-              room: '404',
-            },
-            {
-              id: '2',
-              title: 'Planning session',
-              startDate: Date.now(),
-              endDate: Date.now(),
-              room: '401',
-            },
+            // {
+            //   id: '1',
+            //   title: 'Planning session',
+            //   startDate: Date.now(),
+            //   endDate: Date.now(),
+            //   room: '404',
+            // },
+            // {
+            //   id: '2',
+            //   title: 'Planning session',
+            //   startDate: Date.now(),
+            //   endDate: Date.now(),
+            //   room: '401',
+            // },
           ],
         })
       })

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // const BASE_URL = 'http://127.0.0.1:8000'
-const BASE_URL = 'http://192.168.1.122:1080'
+const BASE_URL = 'http://192.168.43.46:8000'
 
 const config = async () => {
   return {
@@ -34,7 +34,11 @@ export const getMeetingList = async () => {
   })
 }
 
-export const getMyMeetingsList = getMeetingList
+export const getMyMeetingsList = async () => {
+  return axios.get(`${BASE_URL}/meeting/my`, {
+    ...(await config()),
+  })
+}
 
 export const getMeeting = async (meetingId) => {
   console.log('meetingId: ', meetingId)
@@ -125,11 +129,12 @@ export const getPoll = async (poll_id) => {
   })
 }
 
-export const createVote = async (option_id, vote) => {
+export const createVote = async (option_id, status) => {
   return axios.post(
     `${BASE_URL}/vote`,
     {
       option_id,
+      status,
     },
     {
       ...(await config()),
@@ -149,6 +154,58 @@ export const createComment = async (poll_id, newComment) => {
     {
       poll: poll_id,
       text: newComment,
+    },
+    {
+      ...(await config()),
+    },
+  )
+}
+
+export const removeOptionApi = async (option_id) => {
+  return axios.delete(`${BASE_URL}/option/${option_id}`, {
+    ...(await config()),
+  })
+}
+
+export const createOptionApi = async (poll_id, start_date, end_date) => {
+  return axios.post(
+    `${BASE_URL}/option`,
+    {
+      poll_id,
+      start_date,
+      end_date,
+    },
+    {
+      ...(await config()),
+    },
+  )
+}
+
+export const updateNotifSetting = async (action, active) => {
+  return axios.post(
+    `${BASE_URL}/notification`,
+    {
+      action,
+      active,
+    },
+    {
+      ...(await config()),
+    },
+  )
+}
+
+export const getNotifSetting = async () => {
+  return axios.get(`${BASE_URL}/notification`, {
+    ...(await config()),
+  })
+}
+
+export const replyToComment = async (comment_id, text) => {
+  return axios.post(
+    `${BASE_URL}/reply`,
+    {
+      comment_id,
+      text,
     },
     {
       ...(await config()),

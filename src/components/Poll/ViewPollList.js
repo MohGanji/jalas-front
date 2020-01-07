@@ -1,37 +1,36 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { getMeetingList } from '../utils/fetcher'
-import Header from '../Header/Header'
-import Footer from '../Footer/Footer'
 import MeetingPreview from '../Meeting/MeetingPreview'
+import { Header } from 'semantic-ui-react'
+import PollListItem from './PollListItem'
 
-export default class ManagePolls extends Component {
+export default class ViewPollList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      meetings: [],
+      polls: [],
     }
   }
 
   componentDidMount() {
     getMeetingList().then((res) => {
       console.log('getMeetingList: ', res.data)
-      this.setState({ meetings: res.data })
+      this.setState({ polls: res.data })
     })
   }
 
   render() {
-    const { meetings } = this.state
+    const { polls } = this.state
 
     return (
       <div>
-        <Header />
-        {meetings.map((meeting, ind) => (
-          <Link key={ind} to={`/polls/manage/${meeting.id}`}>
-            <MeetingPreview title={meeting.title} />
+        <Header as="h3">Active Polls</Header>
+        {polls.map((poll, ind) => (
+          <Link key={ind} to={`/poll/${poll.id}/view/`}>
+            <PollListItem title={poll.title} />
           </Link>
         ))}
-        <Footer />
       </div>
     )
   }

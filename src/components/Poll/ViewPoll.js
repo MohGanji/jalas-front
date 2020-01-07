@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Container, Header, Segment, Card, Button, Icon } from 'semantic-ui-react'
 import { createVote, getPoll } from '../utils/fetcher'
 import CommentsList from '../Comments/CommentsList'
+import { renderDate } from '../utils/dateUtils'
 
 export default class ViewPoll extends Component {
   constructor(props) {
@@ -38,10 +39,12 @@ export default class ViewPoll extends Component {
         this.setState({
           title: res.data.title,
           options: res.data.options_set.map((option) => {
-            const userVotes = option.votes_set.filter((vote) => vote.person.email === this.state.user_email)
+            const userVotes = option.votes_set.filter((vote) => vote.person.email === localStorage.getItem('session'))
+            console.log('TCL: ViewPoll -> componentWillMount -> userVotes', userVotes)
+            console.log('00000000: ', userVotes.length ? userVotes[0].status : -1)
             return {
               ...option,
-              vote: userVotes.length ? 1 : 0,
+              status: userVotes.length ? userVotes[0].status : -1,
             }
           }),
         })
@@ -49,12 +52,12 @@ export default class ViewPoll extends Component {
       .catch((err) => console.error)
   }
 
-  voteOption(optionId, vote) {
-    createVote(optionId, vote)
+  voteOption(optionId, status) {
+    createVote(optionId, status)
       .then((data) => {
         this.setState((prev) => ({
           options: prev.options.map((op) => {
-            return op.id === optionId ? { ...op, vote: vote } : op
+            return op.id === optionId ? { ...op, status: status } : op
           }),
         }))
       })
@@ -77,16 +80,33 @@ export default class ViewPoll extends Component {
             {options.map((option, ind) => (
               <Card key={option.id} fluid>
                 <Card.Content>
-                  from {option.start_date} to {option.end_date}
+                  from {renderDate(option.start_date)} to {renderDate(option.end_date)}
                   <Button
                     floated="right"
                     onClick={() => this.voteOption(option.id, 1)}
-                    basic
-                    disabled={option.vote === 1}
+                    disabled={option.status === 1}
                     color="green"
                   >
                     <Icon name="thumbs up" />
-                    Upvote
+                    Agree
+                  </Button>
+                  <Button
+                    floated="right"
+                    onClick={() => this.voteOption(option.id, 2)}
+                    disabled={option.status === 2}
+                    color="olive"
+                  >
+                    <Icon name="thumbs up" />
+                    Agree If Needed
+                  </Button>
+                  <Button
+                    floated="right"
+                    onClick={() => this.voteOption(option.id, 0)}
+                    disabled={option.status === 0}
+                    color="orange"
+                  >
+                    <Icon name="thumbs down" />
+                    Disagree
                   </Button>
                 </Card.Content>
               </Card>

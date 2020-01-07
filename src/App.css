@@ -1,11 +1,12 @@
 .app-container {
-    padding-top: 40px;
+  /* padding-top: 40px; */
+  background-color: whitesmoke;
 }
 
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 
 .padded {
-    padding: 4px !important;
+  padding: 4px !important;
 }

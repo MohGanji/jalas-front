@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { getMeetingList } from '../utils/fetcher'
-import Header from '../Header/Header'
 import Footer from '../Footer/Footer'
 import MeetingPreview from '../Meeting/MeetingPreview'
 
@@ -25,7 +24,6 @@ export default class MeetingList extends Component {
 
     return (
       <div>
-        <Header />
         {meetings.map((meeting, ind) => (
           <Link key={ind} to={`/polls/manage/1`}>
             <MeetingPreview title={meeting.title} />

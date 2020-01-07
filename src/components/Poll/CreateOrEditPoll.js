@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import { Container, Form, Header, Segment, Card, Button } from 'semantic-ui-react'
-import { createOrUpdatePoll, getPoll } from '../utils/fetcher'
+import { createOrUpdatePoll, getPoll, removeOptionApi, createOptionApi } from '../utils/fetcher'
 import { renderDate } from '../utils/dateUtils'
 
 export default class CreateOrEditPoll extends Component {
@@ -21,6 +21,7 @@ export default class CreateOrEditPoll extends Component {
       currentGuest: '',
       submitted: false,
       new_poll_id: '',
+      redirectTo: '',
     }
     this.handleValueChange = this.handleValueChange.bind(this)
   }
@@ -61,17 +62,42 @@ export default class CreateOrEditPoll extends Component {
     } else if (end_date <= start_date) {
       return alert('Start Date should be smaller than end Date')
     } else {
-      this.setState((prevState) => ({
-        options: [...prevState.options, { start_date, end_date }],
-        currentOptionStartDate: '',
-        currentOptionEndDate: '',
-      }))
+      if (this.state.poll_id) {
+        createOptionApi(this.state.poll_id, start_date, end_date)
+          .then((res) => {
+            this.setState((prevState) => ({
+              options: [...prevState.options, { start_date, end_date, id: res.data.option_id }],
+              currentOptionStartDate: '',
+              currentOptionEndDate: '',
+            }))
+          })
+          .catch((err) => alert(err))
+      } else {
+        this.setState((prevState) => ({
+          options: [...prevState.options, { start_date, end_date }],
+          currentOptionStartDate: '',
+          currentOptionEndDate: '',
+        }))
+      }
     }
   }
   removeOption(ind) {
-    this.setState((prev) => ({
-      options: [...prev.options.slice(0, ind), ...prev.options.slice(ind + 1)],
-    }))
+    if (this.state.options[ind].id) {
+      removeOptionApi(this.state.options[ind].id)
+        .then((res) => {
+          this.setState((prev) => {
+            console.log([...prev.options.slice(0, ind), ...prev.options.slice(ind + 1)])
+            return {
+              options: [...prev.options.slice(0, ind), ...prev.options.slice(ind + 1)],
+            }
+          })
+        })
+        .catch((err) => alert(err))
+    } else {
+      this.setState((prev) => ({
+        options: [...prev.options.slice(0, ind), ...prev.options.slice(ind + 1)],
+      }))
+    }
   }
 
   addGuest() {
@@ -99,11 +125,21 @@ export default class CreateOrEditPoll extends Component {
     event.preventDefault()
     createOrUpdatePoll(this.state)
       .then((res) => {
-        this.setState({ submitted: true, new_poll_id: res.data.id })
+        this.setState({ submitted: true, new_poll_id: res.data.id, redirectTo: `/poll/${res.data.id}/edit` })
       })
       .catch((err) => {
         console.error('Error in creating poll: ', err)
+        alert('Error: Some attendees are not using jalas')
       })
+  }
+
+  GoToUrl(event, url) {
+    event.preventDefault()
+    this.setState((prev) => ({
+      redirectTo: url,
+      submitted: true,
+      new_poll_id: prev.poll_id,
+    }))
   }
 
   render() {
@@ -117,10 +153,11 @@ export default class CreateOrEditPoll extends Component {
       currentGuest,
       submitted,
       new_poll_id,
+      redirectTo,
     } = this.state
     // console.log(this.state);
     return submitted && new_poll_id ? (
-      <Redirect to={`/poll/${new_poll_id}/edit`} />
+      <Redirect push to={redirectTo} />
     ) : (
       <Container>
         <Segment>
@@ -202,9 +239,21 @@ export default class CreateOrEditPoll extends Component {
                 ))}
               </Segment>
             )}
-            <Form.Button primary type="submit" onClick={(e) => this.submitForm(e)}>
-              {poll_id ? 'Update Poll' : 'Create Poll'}
-            </Form.Button>
+            <Form.Group>
+              <Form.Button primary inline type="submit" onClick={(e) => this.submitForm(e)}>
+                {poll_id ? 'Update Poll' : 'Create Poll'}
+              </Form.Button>
+              {poll_id && (
+                <Form.Button color="grey" type="button" onClick={(e) => this.GoToUrl(e, `/polls/manage/${poll_id}`)}>
+                  Manage Poll
+                </Form.Button>
+              )}
+              {poll_id && (
+                <Form.Button color="grey" type="button" onClick={(e) => this.GoToUrl(e, `/poll/${poll_id}/view`)}>
+                  View Poll
+                </Form.Button>
+              )}
+            </Form.Group>
           </Form>
         </Segment>
       </Container>

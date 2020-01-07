@@ -145,8 +145,8 @@ class Meeting extends Component {
                 startDate={poll.start_date}
                 finalizeMeeting={this.finalizeMeeting}
                 endDate={poll.end_date}
-                likes={poll.votes_agree}
-                dislikes={poll.votes_disagree}
+                likes={poll.votes_set.filter((v) => v.status === 1).length}
+                dislikes={poll.votes_set.filter((v) => v.status === 0).length}
               />
             ))}
           </Container>
