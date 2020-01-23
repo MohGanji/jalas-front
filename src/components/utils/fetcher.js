@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // const BASE_URL = 'http://127.0.0.1:8000'
-const BASE_URL = 'http://192.168.43.46:8000'
+const BASE_URL = 'http://team99.fall98.utse.ir/api'
 
 const config = async () => {
   return {
